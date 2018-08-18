@@ -32,7 +32,7 @@ new CronJob('* */30 * * * *', async () => {
 });
 
 // 每週檢查有沒有寫文章
-new CronJob('0 0 0 * * 0', async () => {
+new CronJob('0 50 23 * * 6', async () => {
 	bot.sendChatAction(msg.chat.id, 'typing');
 	const y = [];
 	const n = [];
