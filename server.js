@@ -8,32 +8,37 @@ const blogs = require('./blogs');
 const bot = new TelegramBot(process.env.TGTOKEN, {polling: true});
 
 // 每三十分鐘抓新文章
-new CronJob('* */30 * * * *', async () => {
-	bot.sendChatAction(process.env.KP3am_CHATID, 'typing');
-	const blogs = await Promise.all(blogs.map(x => x.getRecent(x.link, 30, 'minutes')));
+new CronJob('0 */30 * * * *', async () => {
+	bot.sendChatAction(process.env.KP3am_CHAT, 'typing');
+	const theBlogs = await Promise.all(blogs.map(x => Articles.getRecent(x.link, 30, 'minutes')));
 	let articles = [];
-	Array.from(blogs).forEach(async blog => {
-		if(blog.articles) articles.push(blog.articles[0]);
+	Array.from(theBlogs).forEach(async (blog, i) => {
+		if(blog.articles.length){
+			articles.push({
+				username: blogs[i].username,
+				article: blog.articles[0]
+			});
+		}
 	});
-	articles = articles.sort((a, b) => moment(b.isoDate).unix() - moment(a.isoDate).unix());
+	articles = articles.sort((a, b) => moment(b.article.isoDate).unix() - moment(a.article.isoDate).unix());
 	if(articles.length > 1){
 		let msg = '最近的新文章：\n';
 		Array.from(articles).forEach(article => {
-			msg += `*${article.title}* \n🔗 ${article.link}\n`;
+			msg += `*${article.article.title}* \n🔗 ${article.article.link}\n\n`;
 		});
-		bot.sendMessage(process.env.KP3am_CHATID, msg.trim(), {parse_mode: 'Markdown', disable_web_page_preview: true});
+		bot.sendMessage(process.env.KP3am_CHAT, msg.trim(), {parse_mode: 'Markdown', disable_web_page_preview: true});
 	}else if(articles.length === 1){
 		const article = articles[0];
-		const content = article.contentSnippet.length > 100 ?
-			`${article.contentSnippet.slice(0, 100)}...` : article.contentSnippet;
-		let msg = `${article.author} 的新文章：*${article.title}*\n${content}\n🔗 ${article.link}`;
-		bot.sendMessage(process.env.KP3am_CHATID, msg.trim(), {parse_mode: 'Markdown', disable_web_page_preview: true});
+		const content = article.article.contentSnippet.length > 100 ?
+			`${article.article.contentSnippet.slice(0, 100)}...` : article.article.contentSnippet;
+		let msg = `@${article.username} 的新文章：*${article.article.title}*\n${content}\n🔗 ${article.article.link}`;
+		bot.sendMessage(process.env.KP3am_CHAT, msg.trim(), {parse_mode: 'Markdown', disable_web_page_preview: true});
 	}
 }, null, true, 'Asia/Taipei');
 
 // 每週檢查有沒有寫文章
 new CronJob('0 50 23 * * 6', async () => {
-	bot.sendChatAction(process.env.KP3am_CHATID, 'typing');
+	bot.sendChatAction(process.env.KP3am_CHAT, 'typing');
 	const y = [];
 	const n = [];
 	let articles = await Promise.all(blogs.map(x => Articles.getThisWeek(x.link)));
@@ -42,7 +47,7 @@ new CronJob('0 50 23 * * 6', async () => {
 		if(blog.articles.length){
 			y.push({
 				username: blogs[i].username,
-				count: articles.length
+				count: blog.articles.length
 			});
 		}else{
 			n.push(blogs[i].username);
@@ -55,8 +60,8 @@ new CronJob('0 50 23 * * 6', async () => {
 			msg += `@${blog.username} 寫了 ${blog.count} 篇文章\n`
 		});
 		msg += `然而 `;
-		Array.from(n).forEach((blog, i) => {
-			msg += `@${blog.username}`;
+		Array.from(n).forEach((username, i) => {
+			msg += `@${username}`;
 			if(i !== n.length - 1) msg += ', ';
 		});
 		msg += ' 在這個禮拜並沒有撰寫文章 🤔';
@@ -69,7 +74,7 @@ new CronJob('0 50 23 * * 6', async () => {
 	}else{
 		msg += 'Oops, 本週沒有人寫文章 😕';
 	}
-	bot.sendMessage(process.env.KP3am_CHATID, msg.trim());
+	bot.sendMessage(process.env.KP3am_CHAT, msg.trim());
 }, null, true, 'Asia/Taipei');
 
 bot.onText(/\/recents/, async (msg) => {

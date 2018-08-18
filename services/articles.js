@@ -29,7 +29,7 @@ const getLatest = (linkRss) => new Promise(async (resolve, reject) => {
 const getRecent = (linkRss, n = 7, unit = 'days') => new Promise(async (resolve, reject) => {
 	try{
 		const feed = await getRSS(linkRss);
-		const articles = feed.items.filter(x => moment(x.isoDate).diff(new Date(), unit) <= n);
+		const articles = feed.items.filter(x => Math.abs(moment(new Date()).diff(x.isoDate, unit)) <= n);
 		resolve({
 			siteTitle: feed.title,
 			articles,
@@ -42,7 +42,8 @@ const getRecent = (linkRss, n = 7, unit = 'days') => new Promise(async (resolve,
 const getThisWeek = (linkRss) => new Promise(async (resolve, reject) => {
 	try{
 		const feed = await getRSS(linkRss);
-		const articles = feed.items.filter(x => moment().day('Sunday').unix() < moment(x.isoDate).unix());
+		const Sunday = moment(new Date()).day('Sunday').startOf('day');
+		const articles = feed.items.filter(x => Sunday.unix() < moment(x.isoDate).unix());
 		resolve({
 			siteTitle: feed.title,
 			articles,
