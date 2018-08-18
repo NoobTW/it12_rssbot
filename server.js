@@ -9,7 +9,7 @@ const bot = new TelegramBot(process.env.TGTOKEN, {polling: true});
 
 // 每三十分鐘抓新文章
 new CronJob('* */30 * * * *', async () => {
-	bot.sendChatAction(msg.chat.id, 'typing');
+	bot.sendChatAction(process.env.KP3am_CHATID, 'typing');
 	const blogs = await Promise.all(blogs.map(x => x.getRecent(x.link, 30, 'minutes')));
 	let articles = [];
 	Array.from(blogs).forEach(async blog => {
@@ -33,7 +33,7 @@ new CronJob('* */30 * * * *', async () => {
 
 // 每週檢查有沒有寫文章
 new CronJob('0 50 23 * * 6', async () => {
-	bot.sendChatAction(msg.chat.id, 'typing');
+	bot.sendChatAction(process.env.KP3am_CHATID, 'typing');
 	const y = [];
 	const n = [];
 	let articles = await Promise.all(blogs.map(x => Articles.getThisWeek(x.link)));
