@@ -1,0 +1,24 @@
+{
+  "name": "rssbot",
+  "version": "0.1.0",
+  "description": "An RSS bot for KP3am",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "author": "NoobTW",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cron": "^1.4.0",
+    "dotenv": "^6.0.0",
+    "moment": "^2.22.2",
+    "node-cron": "^1.2.1",
+    "node-telegram-bot-api": "^0.30.0",
+    "rss-parser": "^3.4.3"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0",
+    "should": "^13.2.3"
+  }
+}
