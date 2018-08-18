@@ -29,7 +29,7 @@ new CronJob('* */30 * * * *', async () => {
 		let msg = `${article.author} 的新文章：*${article.title}*\n${content}\n🔗 ${article.link}`;
 		bot.sendMessage(process.env.KP3am_CHATID, msg.trim(), {parse_mode: 'Markdown', disable_web_page_preview: true});
 	}
-});
+}, null, true, 'Asia/Taipei');
 
 // 每週檢查有沒有寫文章
 new CronJob('0 50 23 * * 6', async () => {
@@ -70,7 +70,7 @@ new CronJob('0 50 23 * * 6', async () => {
 		msg += 'Oops, 本週沒有人寫文章 😕';
 	}
 	bot.sendMessage(process.env.KP3am_CHATID, msg.trim());
-});
+}, null, true, 'Asia/Taipei');
 
 bot.onText(/\/recents/, async (msg) => {
 	bot.sendChatAction(msg.chat.id, 'typing');
