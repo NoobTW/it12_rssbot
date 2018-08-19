@@ -4,10 +4,10 @@ const moment = require('moment');
 const parser = new Parser();
 moment.locale('zh-tw');
 
-const getRSS = linkRss => parser.parseURL(linkRss);
+const getRSS = linkRss => parser.parseURL(encodeURI(linkRss));
 
 const getLatest = async (linkRss) => {
-	const feed = await getRSS(encodeURI(linkRss));
+	const feed = await getRSS(linkRss);
 	const article = feed.items[0];
 	return {
 		siteTitle: feed.title,
