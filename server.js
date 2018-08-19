@@ -70,7 +70,7 @@ new CronJob('0 50 23 * * 6', async () => {
 		Array.from(y).forEach(blog => {
 			msg += `@${blog.username} 寫了 ${blog.count} 篇文章\n`
 		});
-		msg += '🎉 恭喜，每週每個人都寫了文章！';
+		msg += '🎉 恭喜，本週每個人都寫了文章！';
 	}else{
 		msg += 'Oops, 本週沒有人寫文章 😕';
 	}
