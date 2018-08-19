@@ -7,7 +7,7 @@ moment.locale('zh-tw');
 const getRSS = linkRss => parser.parseURL(linkRss);
 
 const getLatest = async (linkRss) => {
-	const feed = await getRSS(linkRss);
+	const feed = await getRSS(encodeURI(linkRss));
 	const article = feed.items[0];
 	return {
 		siteTitle: feed.title,
