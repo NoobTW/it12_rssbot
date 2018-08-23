@@ -39,8 +39,8 @@ new CronJob('0 */30 * * * *', async () => {
 // 每週檢查有沒有寫文章
 new CronJob('0 50 23 * * 6', async () => {
 	bot.sendChatAction(process.env.KP3am_CHAT, 'typing');
-	const y = [];
-	const n = [];
+	let y = [];
+	let n = [];
 	let articles = await Promise.all(blogs.map(x => Articles.getThisWeek(x.link)));
 	articles = articles.sort((a, b) => moment(b.isoDate).unix() - moment(a.isoDate).unix());
 	Array.from(articles).forEach(async (blog, i) => {
@@ -53,6 +53,9 @@ new CronJob('0 50 23 * * 6', async () => {
 			n.push(blogs[i].username);
 		}
 	});
+	y = y.sort((a, b) => b.count - a.count); // count sort desc.
+	n = n.sort((a, b) => a.username > b.username); // alphabetical sort asc.
+
 	let msg = '';
 	if(y.length && n.length){
 		msg += '本週文章達成數：\n';
