@@ -1,9 +1,31 @@
 const should = require('should');
 const moment = require('moment');
+const Parser = require('rss-parser');
 const Articles = require('../services/articles');
 const blogs = require('../blogs.json');
 
+const parser = new Parser();
 const TEST_URL = blogs[0].link;
+
+describe('Blogs.json', () => {
+	it('should be a valid JSON', () => {
+		blogs.should.be.instanceOf(Object);
+	});
+	it('should have correct properties', () => {
+		Array.from(blogs).forEach(blog => {
+			blog.should.have.property('username');
+			blog.should.have.property('link');
+		});
+	});
+	const timeout = blogs.length * 5000;
+	it('should be correct RSS', async () => {
+		let theBlogs = await Promise.all(blogs.map(x => parser.parseURL(x.link)));
+		Array.from(theBlogs).forEach(rss => {
+			rss.should.have.property('title');
+			rss.should.have.property('items');
+		});
+	}).timeout(timeout);
+});
 
 describe('Articles', () => {
 	it('should parse RSS succesfully', async () => {
