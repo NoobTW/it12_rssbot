@@ -17,6 +17,7 @@ describe('Blogs.json', () => {
 			blog.should.have.property('link');
 		});
 	});
+
 	const timeout = blogs.length * 5000;
 	it('should be correct RSS', async () => {
 		let theBlogs = await Promise.all(blogs.map(x => parser.parseURL(x.link)));
@@ -57,4 +58,12 @@ describe('Articles', () => {
 			moment(data.isoDate).diff(new Date, 'days').should.be.below(7);
 		}
 	}).timeout(5000);
+
+	const timeout = blogs.length * 5000;
+	it('should do new articless check without an error', async () => {
+		await Articles.newArticlesCheck(blogs);
+	}).timeout(timeout);
+	it('should do weekly check without an error', async () => {
+		await Articles.weeklyCheck(blogs);
+	}).timeout(timeout);
 });
