@@ -14,15 +14,15 @@ new CronJob('0 */30 * * * *', async () => {
 	if(articles.length > 1){
 		let msg = '最近的新文章：\n';
 		Array.from(articles).forEach(article => {
-			msg += `*${article.article.title}* \n🔗 ${article.article.link}\n\n`;
+			msg += `<b>${article.article.title}</b> \n🔗 ${article.article.link}\n\n`;
 		});
-		bot.sendMessage(process.env.KP3am_CHAT, msg.trim(), {parse_mode: 'Markdown', disable_web_page_preview: true});
+		bot.sendMessage(process.env.KP3am_CHAT, msg.trim(), {parse_mode: 'HTML', disable_web_page_preview: true});
 	}else if(articles.length === 1){
 		const article = articles[0];
 		const content = article.article.contentSnippet.length > 100 ?
 			`${article.article.contentSnippet.slice(0, 100)}...` : article.article.contentSnippet;
-		let msg = `@${article.username} 的新文章：*${article.article.title}*\n${content}\n🔗 ${article.article.link}`;
-		bot.sendMessage(process.env.KP3am_CHAT, msg.trim(), {parse_mode: 'Markdown', disable_web_page_preview: true});
+		let msg = `@${article.username} 的新文章：<b>${article.article.title}</b>\n${content}\n🔗 ${article.article.link}`;
+		bot.sendMessage(process.env.KP3am_CHAT, msg.trim(), {parse_mode: 'HTML', disable_web_page_preview: true});
 	}
 }, null, true, 'Asia/Taipei');
 
@@ -64,11 +64,11 @@ bot.onText(/\/recents/, async (msg) => {
 		if(article){
 			const content = article.contentSnippet.length > 100 ?
 				`${article.contentSnippet.slice(0, 100)}...` : article.contentSnippet;
-			message += `*${article.title}* ${moment(article.isoDate).fromNow()}\n`;
+			message += `<b>${article.title}</b> ${moment(article.isoDate).fromNow()}\n`;
 			message += `${content}\n🔗 ${article.link}\n\n`;
 		}
 	});
-	bot.sendMessage(msg.chat.id, message.trim(), {parse_mode: 'Markdown', disable_web_page_preview: true});
+	bot.sendMessage(msg.chat.id, message.trim(), {parse_mode: 'HTML', disable_web_page_preview: true});
 });
 
 bot.onText(/\/all/, async (msg) => {
@@ -78,11 +78,11 @@ bot.onText(/\/all/, async (msg) => {
 	articles = articles.sort((a, b) => moment(b.isoDate).unix() - moment(a.isoDate).unix());
 	Array.from(articles).forEach(article => {
 		if(article){
-			message += `*${article.title}* ${moment(article.isoDate).fromNow()}\n`;
+			message += `<b>${article.title}</b> ${moment(article.isoDate).fromNow()}\n`;
 			message += `🔗 ${article.link}\n\n`;
 		}
 	});
-	bot.sendMessage(msg.chat.id, message.trim(), {parse_mode: 'Markdown', disable_web_page_preview: true});
+	bot.sendMessage(msg.chat.id, message.trim(), {parse_mode: 'HTML', disable_web_page_preview: true});
 });
 
 bot.onText(/\/about/, (msg) => {
