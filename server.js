@@ -55,7 +55,7 @@ new CronJob('0 50 23 * * 6', async () => {
 	bot.sendMessage(process.env.KP3am_CHAT, msg.trim());
 }, null, true, 'Asia/Taipei');
 
-bot.onText(/\/recents/, async (msg) => {
+bot.onText(/^\/recents/, async (msg) => {
 	bot.sendChatAction(msg.chat.id, 'typing');
 	let message = '最近的三篇新文章：\n';
 	let articles = await Promise.all(blogs.map(x => Articles.getLatest(x.link)));
@@ -71,7 +71,7 @@ bot.onText(/\/recents/, async (msg) => {
 	bot.sendMessage(msg.chat.id, message.trim(), {parse_mode: 'HTML', disable_web_page_preview: true});
 });
 
-bot.onText(/\/all/, async (msg) => {
+bot.onText(/^\/all/, async (msg) => {
 	bot.sendChatAction(msg.chat.id, 'typing');
 	let message = '大家最近的新文章：\n';
 	let articles = await Promise.all(blogs.map(x => Articles.getLatest(x.link)));
@@ -85,6 +85,6 @@ bot.onText(/\/all/, async (msg) => {
 	bot.sendMessage(msg.chat.id, message.trim(), {parse_mode: 'HTML', disable_web_page_preview: true});
 });
 
-bot.onText(/\/about/, (msg) => {
+bot.onText(/^\/about/, (msg) => {
 	bot.sendMessage(msg.chat.id, '鼓勵大家寫文章，所以我會定期檢查大家有沒有寫文章。\n歡迎送 PR；https://github.com/KP3am/rssbot');
 });
