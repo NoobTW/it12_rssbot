@@ -59,6 +59,7 @@ bot.onText(/^\/recents/, async (msg) => {
 	bot.sendChatAction(msg.chat.id, 'typing');
 	let message = '最近的三篇新文章：\n';
 	let articles = await Promise.all(blogs.map(x => Articles.getLatest(x.link)));
+	articles = articles.filter(x => x);
 	articles = articles.sort((a, b) => moment(b.isoDate).unix() - moment(a.isoDate).unix()).slice(0, 3);
 	Array.from(articles).forEach(article => {
 		if(article){
@@ -75,6 +76,7 @@ bot.onText(/^\/all/, async (msg) => {
 	bot.sendChatAction(msg.chat.id, 'typing');
 	let message = '大家最近的新文章：\n';
 	let articles = await Promise.all(blogs.map(x => Articles.getLatest(x.link)));
+	articles = articles.filter(x => x);
 	articles = articles.sort((a, b) => moment(b.isoDate).unix() - moment(a.isoDate).unix());
 	Array.from(articles).forEach(article => {
 		if(article){
