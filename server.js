@@ -55,7 +55,7 @@ new CronJob('0 50 23 * * 6', async () => {
 	bot.sendMessage(process.env.KP3am_CHAT, msg.trim());
 }, null, true, 'Asia/Taipei');
 
-bot.onText(/^\/recents/, async (msg) => {
+bot.onText(/^\/recent/, async (msg) => {
 	bot.sendChatAction(msg.chat.id, 'typing');
 	let message = '最近的三篇新文章：\n';
 	let articles = await Promise.all(blogs.map(x => Articles.getLatest(x.link)));
