@@ -7,6 +7,11 @@ const blogs = require('./blogs');
 
 const bot = new TelegramBot(process.env.TGTOKEN, {polling: true});
 
+const escapeHTML = (str) => {
+	return str.replace(/<|>/g, '');
+	// return str.replace(/<[^>]+>/g, '');
+}
+
 // 每三十分鐘抓新文章
 new CronJob('0 */30 * * * *', async () => {
 	bot.sendChatAction(process.env.KP3am_CHAT, 'typing');
@@ -19,17 +24,12 @@ new CronJob('0 */30 * * * *', async () => {
 		bot.sendMessage(process.env.KP3am_CHAT, msg.trim(), {parse_mode: 'HTML', disable_web_page_preview: true});
 	}else if(articles.length === 1){
 		const article = articles[0];
-		const content = article.article.contentSnippet.length > 100 ?
-			`${article.article.contentSnippet.slice(0, 100)}...` : article.article.contentSnippet;
+		const c = escapeHTML(article.article.contentSnippet);
+		const content = c.length > 100 ? `${c.slice(0, 100)}...` : c;
 		let msg = `@${article.username} 的新文章：<b>${article.article.title}</b>\n${content}\n🔗 ${article.article.link}`;
 		bot.sendMessage(process.env.KP3am_CHAT, msg.trim(), {parse_mode: 'HTML', disable_web_page_preview: true});
 	}
 }, null, true, 'Asia/Taipei');
-
-const escapeHTML = (str) => {
-	return str.replace(/<|>/g, '');
-	// return str.replace(/<[^>]+>/g, '');
-}
 
 bot.onText(/^\/recent/, async (msg) => {
 	bot.sendChatAction(msg.chat.id, 'typing');
